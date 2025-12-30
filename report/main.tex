@@ -1,0 +1,139 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                              Preamble                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ----------------------------------------------------------------------
+% Set the document class
+% ----------------------------------------------------------------------
+\documentclass[12pt]{article}
+
+% ----------------------------------------------------------------------
+% Define external packages, language, margins, fonts, new commands 
+% and colors
+% ----------------------------------------------------------------------
+\usepackage[utf8]{inputenc} % Codification
+\usepackage[english]{babel} % Writing idiom
+
+\usepackage[export]{adjustbox} % Align images
+\usepackage{amsmath} % Extra commands for math mode
+\usepackage{amssymb} % Mathematical symbols
+\usepackage{anysize} % Personalize margins
+    \marginsize{2cm}{2cm}{2cm}{2cm} % {left}{right}{above}{below}
+\usepackage{appendix} % Appendices
+\usepackage{cancel} % Expression cancellation
+\usepackage{caption} % Figure numeration
+\usepackage{cite} % Citations, like [1 - 3]
+\usepackage{color} % Text coloring
+\usepackage{fancyhdr} % Head note and footnote
+    \pagestyle{fancy}
+    \fancyhf{}
+    \fancyhead[L]{\footnotesize IST} % Left of Head note
+    \fancyhead[R]{\footnotesize ULisboa} % Right of Head note
+    \fancyfoot[L]{\footnotesize SIRS} % Left of Footnote
+    \fancyfoot[C]{\thepage} % Center of Footnote
+    \fancyfoot[R]{\footnotesize METI} % Right of Footnote
+    \renewcommand{\footrulewidth}{0.4pt} % Footnote rule
+\usepackage{float} % Utilization of [H] in figures
+\usepackage{graphicx} % Figures in LaTeX
+\usepackage[colorlinks = true, plainpages = true, linkcolor = istblue, urlcolor = istblue, citecolor = istblue, anchorcolor = istblue]{hyperref}
+%\usepackage{indentfirst} % First paragraph
+\usepackage{parskip}
+\usepackage{siunitx} % SI units
+\usepackage{subfigure} % Subfigures
+\setlength {\marginparwidth }{2cm} 
+\usepackage{todonotes}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+% Random text (not needed)
+\usepackage{lipsum}
+\usepackage{duckuments}
+\usepackage{hyperref}
+
+% New and re-newcommands
+\newcommand{\sen}{\operatorname{\sen}} % Sine function definition
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Specific rule definition
+\renewcommand{\appendixpagename}{\LARGE Appendices}
+
+% Colors
+\definecolor{istblue}{RGB}{3, 171, 230}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                 Document                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+% ----------------------------------------------------------------------
+%                               CAPA
+% ----------------------------------------------------------------------
+\begin{titlepage}
+    \centering
+    
+    % Logo do IST (alinhado à esquerda como costuma ser no template oficial)
+    \begin{flushleft}
+        \includegraphics[width=5cm]{images/istlog.png}
+    \end{flushleft}
+
+    \vspace{2.0cm}
+
+    % Título Principal: Usa Negrito em vez de Small Caps para maior impacto
+    {\huge \textbf{Design and Implementation of an Authenticated Post-Quantum Key Exchange Protocol} \par}
+    
+    \vspace{1.0cm}
+    
+    % Subtítulo: Usar Small Caps apenas aqui ou Itálico para criar contraste
+    {\Large \textit{An Adaptation of the Encrypted Key Exchange Protocol using CRYSTALS-Kyber} \par}
+
+    \vspace{2.5cm}
+
+    % Linhas e Grau: Mais finas e elegantes
+    \rule{\linewidth}{0.2pt} \\[0.4cm]
+    {\large Master's degree in Telecommunications and Informatics Engineering} \\[0.4cm]
+    \rule{\linewidth}{0.2pt}
+
+    \vfill
+
+    % Informação de baixo
+    {\large \textbf{Author:}} \\
+    {\large Inês Martins Ribeiro} \\
+    
+    \vspace{0.8cm}
+    
+    {\large \textbf{Professor}} \\
+    {\large Prof. Ricardo Chaves}
+
+    \vspace{1.5cm}
+
+  %  {\large \textbf{Draft}} \\ % Ou a data final
+   % {\large December 2025}
+
+\end{titlepage}
+
+
+\thispagestyle{empty}
+
+\setcounter{page}{0}
+
+\newpage
+
+% ----------------------------------------------------------------------
+% Indíce
+% ----------------------------------------------------------------------
+\renewcommand*\contentsname{Indíce}
+\tableofcontents
+
+
+\newpage
+
+% ----------------------------------------------------------------------
+% Body
+% ----------------------------------------------------------------------
+\section{Introduction}
+
+% ----------------------------------------------------------------------
+% Backgroung
+% ----------------------------------------------------------------------
+
+
+\end{document}
