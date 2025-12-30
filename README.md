@@ -15,6 +15,11 @@ The main focus is to study and adapt the **Encrypted Key Exchange (EKE)** protoc
 - `src/` – Project source code.  
 - `report/` – Documentation and progress reports.  
 
+## Dependencies
+
+This project uses **PQClean**, an open-source library of post-quantum cryptographic algorithms, for implementing the Kyber key exchange.  
+Repository: [https://github.com/PQClean/PQClean](https://github.com/PQClean/PQClean)
+
 ## Status
 
 Project in early stages.
