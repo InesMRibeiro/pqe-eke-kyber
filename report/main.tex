@@ -23,7 +23,8 @@
 \usepackage{cancel} % Expression cancellation
 \usepackage{caption} % Figure numeration
 \usepackage{cite} % Citations, like [1 - 3]
-\usepackage{color} % Text coloring
+\usepackage{xcolor}
+\usepackage{soul}
 \usepackage{fancyhdr} % Head note and footnote
     \pagestyle{fancy}
     \fancyhf{}
@@ -115,15 +116,12 @@
 
 \setcounter{page}{0}
 
-\newpage
 
 % ----------------------------------------------------------------------
 % Indíce
 % ----------------------------------------------------------------------
 \renewcommand*\contentsname{Indíce}
 \tableofcontents
-
-
 \newpage
 
 % ----------------------------------------------------------------------
@@ -131,9 +129,33 @@
 % ----------------------------------------------------------------------
 \section{Introduction}
 
+\hl{Write about the MOTIVATION: the current threat of quantum computers to classical cryptography, the need for post-quantum cryptography, etc.}\\
+\hl{Problem Statement: Why classical key exchange neeed to evolve} \\
+\hl{Objectives: Design and implement an authenticated post-quantum key exchange protocol based on EKE and CRYSTALS-Kyber}\\
+
 % ----------------------------------------------------------------------
 % Backgroung
 % ----------------------------------------------------------------------
 
+\section {State of the Art}
+
+\subsection{Encrypted Key Exchange (EKE)}
+
+\subsection{Post-Quantum cryptography (PQC)}
+
+\subsection{CRYSTALS-Kyber}
+
+\section {Proposed Design: PQ-EKE with Kyber}
+\subsection{Architecture Overview}
+\subsection{Protocol Flow}
+
+\section{Implementation}
+\subsection{Development Environment}
+\subsection{Core functionalities}
+\subsection{Simulation}
+
+\section{Security Analysis}
+
+\section{Conclusion}
 
 \end{document}
