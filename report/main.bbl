@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{shor1994}
 Peter~W. Shor.
@@ -48,5 +48,11 @@ Eiichiro Fujisaki and Tatsuaki Okamoto.
 \newblock Crystals-kyber reference implementation (repository).
 \newblock \url{https://github.com/pq-crystals/kyber}.
 \newblock Accessed 2026.
+
+\bibitem{InesMRibeiro2026}
+Inês~Martins Ribeiro.
+\newblock Eke-kyber proof-of-concept implementation.
+\newblock \url{https://github.com/InesMRibeiro/pqe-eke-kyber}, 2026.
+\newblock Accessed: 2026.
 
 \end{thebibliography}
