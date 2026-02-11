@@ -1,0 +1,52 @@
+\begin{thebibliography}{1}
+
+\bibitem{shor1994}
+Peter~W. Shor.
+\newblock Algorithms for quantum computation: Discrete logarithms and factoring.
+\newblock In {\em Proceedings of the 35th Annual Symposium on Foundations of Computer Science}, 1994.
+
+\bibitem{nist2024}
+{National Institute of Standards and Technology}.
+\newblock Post-quantum cryptography standardization.
+\newblock \url{https://csrc.nist.gov/projects/post-quantum-cryptography}, 2024.
+\newblock Accessed 2026.
+
+\bibitem{kyberspec}
+Roberto Avanzi, Joppe Bos, Léo Ducas, Eike Kiltz, Tancrede Lepoint, Vadim Lyubashevsky, John~M. Schanck, Peter Schwabe, Gregor Seiler, and Damien Stehlé.
+\newblock Crystals-kyber algorithm specifications and supporting documentation.
+\newblock \url{https://pq-crystals.org/kyber/data/kyber-specification-round3.pdf}, 2021.
+\newblock Accessed 2026.
+
+\bibitem{neke1996}
+Alfred~J. Menezes, Scott~A. Vanstone, and Paul C.~van Oorschot.
+\newblock Authenticated key exchange protocols.
+\newblock In {\em Advances in Cryptology -- CRYPTO’96}, 1996.
+\newblock Available online: \url{https://www.cs.columbia.edu/~smb/papers/neke.pdf}.
+
+\bibitem{diffie1976}
+Whitfield Diffie and Martin~E. Hellman.
+\newblock New directions in cryptography.
+\newblock {\em IEEE Transactions on Information Theory}, 22(6):644--654, 1976.
+
+\bibitem{bellovin1992}
+Steven~M. Bellovin and Michael Merritt.
+\newblock Encrypted key exchange: Password-based protocols secure against dictionary attacks.
+\newblock In {\em Proceedings of the IEEE Symposium on Security and Privacy}, pages 72--84, 1992.
+
+\bibitem{regev2005}
+Oded Regev.
+\newblock On lattices, learning with errors, random linear codes, and cryptography.
+\newblock In {\em Proceedings of the 37th Annual ACM Symposium on Theory of Computing (STOC)}, pages 84--93, 2005.
+
+\bibitem{fujisaki1999}
+Eiichiro Fujisaki and Tatsuaki Okamoto.
+\newblock Secure integration of asymmetric and symmetric encryption schemes.
+\newblock In {\em Advances in Cryptology -- CRYPTO'99}, pages 537--554. Springer, 1999.
+
+\bibitem{pqcrystals_ref}
+{PQ-Crystals Team}.
+\newblock Crystals-kyber reference implementation (repository).
+\newblock \url{https://github.com/pq-crystals/kyber}.
+\newblock Accessed 2026.
+
+\end{thebibliography}

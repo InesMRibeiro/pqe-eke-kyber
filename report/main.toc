@@ -1,15 +1,23 @@
 \babel@toc {english}{}\relax 
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
-\contentsline {section}{\numberline {2}State of the Art}{1}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Encrypted Key Exchange (EKE)}{1}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Post-Quantum cryptography (PQC)}{1}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}CRYSTALS-Kyber}{1}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Proposed Design: PQ-EKE with Kyber}{1}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Architecture Overview}{1}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Protocol Flow}{1}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Implementation}{1}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Development Environment}{1}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Core functionalities}{1}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Simulation}{1}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Security Analysis}{1}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{1}{section.6}%
+\contentsline {section}{\numberline {2}Background and Foundations}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Key Exchange and Authentication}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Classical Key Exchange Protocols}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Encrypted Key Exchange}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Post-Quantum Key Establishment and KEMs}{3}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Lattice-Based Cryptography}{4}{subsection.2.5}%
+\contentsline {section}{\numberline {3}CRYSTALS-Kyber}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Design Goals and Security Model}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Kyber Algorithm Overview}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Mathematical Structure of Kyber}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Implementation Overview}{7}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Key Encapsulation Workflow}{8}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Experimental Validation}{8}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Results}{8}{subsection.3.7}%
+\contentsline {section}{\numberline {4}Authenticated CRYSTALS-Kyber using EKE}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Motivation and Design}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Protocol Specification (EKE-Kyber)}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Implementation Overview}{11}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Experimental Validation}{11}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Security Discussion and Limitations}{12}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Conclusion}{13}{section.5}%

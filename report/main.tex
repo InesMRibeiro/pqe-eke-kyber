@@ -25,6 +25,8 @@
 \usepackage{cite} % Citations, like [1 - 3]
 \usepackage{xcolor}
 \usepackage{soul}
+\usepackage{longtable}
+\usepackage{ragged2e} % Text alignment'
 \usepackage{fancyhdr} % Head note and footnote
     \pagestyle{fancy}
     \fancyhf{}
@@ -79,12 +81,12 @@
     \vspace{2.0cm}
 
     % Título Principal: Usa Negrito em vez de Small Caps para maior impacto
-    {\huge \textbf{Design and Implementation of an Authenticated Post-Quantum Key Exchange Protocol} \par}
+    {\huge \textbf{Understanding and Implementing Authenticated Post-Quantum Key Exchange} \par}
     
     \vspace{1.0cm}
     
     % Subtítulo: Usar Small Caps apenas aqui ou Itálico para criar contraste
-    {\Large \textit{An Adaptation of the Encrypted Key Exchange Protocol using CRYSTALS-Kyber} \par}
+    {\Large \textit{A Practical Study of CRYSTALS-Kyber and EKE} \par}
 
     \vspace{2.5cm}
 
@@ -101,8 +103,8 @@
     
     \vspace{0.8cm}
     
-    {\large \textbf{Professor}} \\
-    {\large Prof. Ricardo Chaves}
+    {\large \textbf{Professor:}} \\
+    {\large Ricardo Chaves}
 
     \vspace{1.5cm}
 
@@ -120,7 +122,7 @@
 % ----------------------------------------------------------------------
 % Indíce
 % ----------------------------------------------------------------------
-\renewcommand*\contentsname{Indíce}
+\renewcommand*\contentsname{Index}
 \tableofcontents
 \newpage
 
@@ -129,33 +131,382 @@
 % ----------------------------------------------------------------------
 \section{Introduction}
 
-\hl{Write about the MOTIVATION: the current threat of quantum computers to classical cryptography, the need for post-quantum cryptography, etc.}\\
-\hl{Problem Statement: Why classical key exchange neeed to evolve} \\
-\hl{Objectives: Design and implement an authenticated post-quantum key exchange protocol based on EKE and CRYSTALS-Kyber}\\
+Over the past decades, classical public-key cryptographic algorithms have played a central role in securing digital communications. Schemes such as RSA and Elliptic Curve Cryptography (ECC) are widely used to provide confidentiality, integrity, and secure key establishment in modern communication protocols. However, due to the recent advancements in the field of quantum computing, these algorithms are now at risk of being compromised by quantum computers.
 
+The development of quantum algorithms, such as Shor’s algorithm \cite{shor1994}, has demonstrated that quantum computers could efficiently solve problems that are currently considered hard for classical computers, including integer factorization and discrete logarithms. Since the security of RSA, Diffie–Hellman, and ECC relies on the computational hardness of these problems, the advent of large-scale quantum computers would render many existing cryptographic protocols insecure.
+
+In response to this emerging threat, Post-Quantum Cryptography (PQC) has become a major area of research. PQC aims to develop cryptographic algorithms that are resistant to both classical and quantum adversaries. In recent years, several mathematical approaches have been proposed, among which lattice-based cryptography has shown great promise, offering strong security guarantees and practical efficiency.
+
+To address the need for standardized post-quantum solutions, the National Institute of Standards and Technology (NIST)\cite{nist2024} has been leading global efforts to develop and standardize post-quantum cryptographic algorithms. In 2024, NIST announced the first group of standardized post-quantum cryptographic algorithms, which includes CRYSTALS-Kyber\cite{kyberspec}, a lattice-based Key Encapsulation Mechanism (KEM) that has demonstrated strong security and efficiency properties.
+
+This report focuses on the study and practical implementation of CRYSTALS-Kyber. The goal is to provide a comprehensive overview of Kyber and its role in post-quantum cryptography. Additionally, this work considers the design of an authenticated post-quantum key exchange protocol based on the Encrypted Key Exchange (EKE) framework, utilizing CRYSTALS-Kyber as the underlying KEM to support authentication and security against man-in-the-middle attacks.
+
+\newpage
 % ----------------------------------------------------------------------
-% Backgroung
+% Background
 % ----------------------------------------------------------------------
 
-\section {State of the Art}
+\section {Background and Foundations}
 
-\subsection{Encrypted Key Exchange (EKE)}
 
-\subsection{Post-Quantum cryptography (PQC)}
+\subsection{Key Exchange and Authentication}
 
-\subsection{CRYSTALS-Kyber}
+Key Exchange refers to the process through which two parties establish a shared secret key over an insecure communication channel \cite{neke1996}. These keys are essential for encrypting and decrypting the data being exchanged, ensuring that the information remains confidential and protected from unauthorized access. 
 
-\section {Proposed Design: PQ-EKE with Kyber}
-\subsection{Architecture Overview}
-\subsection{Protocol Flow}
+While confidentiality is a critical aspect of secure communication, it is not sufficient on its own. In the absence of authentication, communication systems become vulnerable to man-in-the-middle attacks, in which an adversary may not only eavesdrop on the communication but also impersonate one of the parties or actively tamper with the exchanged messages \cite{neke1996}.
 
-\section{Implementation}
-\subsection{Development Environment}
-\subsection{Core functionalities}
-\subsection{Simulation}
+Authentication is therefore a crucial component of secure communication \cite{neke1996}. It ensures that the parties involved are who they claim to be and that the exchanged messages originate from legitimate participants. As a result, authentication plays a central role in the design of key exchange protocols intended for practical deployment, since without it the established secret key may be shared with an unintended party. A clear understanding of the distinction between key exchange and authentication is essential when analyzing existing protocols and designing secure communication systems.
 
-\section{Security Analysis}
 
+
+
+
+\subsection{Classical Key Exchange Protocols}
+
+Classical key exchange mechanisms, such as Diffie-Hellman\cite{diffie1976} and RSA-based key establishment schemes, have been widely used to secure communication channels in protocols including TLS, VPNs, and other network security frameworks.
+
+For instance, the Diffie-Hellman key exchange protocol is one of the most well-known and widely adopted solutions. It allows two parties to establish a shared secret over an insecure channel without requiring any prior shared information. The security of Diffie-Hellman relies on the computational hardness of the discrete logarithm problem\cite{diffie1976}, which is considered infeasible using classical computers. Variants such as Elliptic Curve Diffie-Hellman (ECDH) are extensively used in modern communication protocols due to their efficiency and strong security properties.
+
+Despite their effectiveness against classical adversaries, the security assumptions underlying classical key exchange protocols are challenged by advances in quantum computing. In particular, Shor’s algorithm \cite{shor1994} demonstrates that a sufficiently powerful quantum computer can efficiently solve the discrete logarithm problem, rendering Diffie-Hellman and other classical public-key algorithms insecure in a post-quantum setting.
+
+As a result, there is a growing need to reconsider traditional key exchange mechanisms and explore alternative approaches that remain secure against quantum-capable adversaries\cite{nist2024}. This challenge has motivated the development of new cryptographic paradigms for key establishment, which differ significantly from classical designs.
+
+
+
+
+\subsection{Encrypted Key Exchange}
+
+Encrypted Key Exchange (EKE) is a class of key exchange protocols designed to provide authentication in scenarios where parties share a low-entropy secret, such as a password \cite{bellovin1992}. Unlike traditional authenticated key exchange protocols that rely on public key infrastructures or digital certificates, EKE enables authentication using a pre-shared secret while preventing common attacks associated with password-based systems.
+
+The main challenge in password-based authentication lies in the limited entropy of passwords, which makes them vulnerable to offline dictionary attacks \cite{bellovin1992}. EKE addresses this challenge by ensuring that the password is never transmitted directly over the communication channel and is not exposed in a form that allows an adversary to efficiently test password guesses. Instead, the shared password is used to protect cryptographic material exchanged during the protocol execution.
+
+In an EKE-based protocol, the shared password is typically used to encrypt public values exchanged between the communicating parties. As a result, an adversary who does not possess the correct password is unable to meaningfully interact with the protocol or perform man-in-the-middle attacks. Even if the adversary actively intercepts and modifies protocol messages, the lack of knowledge of the password prevents successful impersonation of either party.
+
+An important characteristic of the EKE paradigm is that it is largely independent of the underlying key exchange primitive. While EKE was originally proposed in the context of classical public-key cryptography, its core idea is not tied to a specific mathematical assumption. Instead, EKE provides a general framework for combining authentication based on shared secrets with key exchange mechanisms.
+
+Despite its advantages, EKE also presents inherent limitations. The security of the protocol ultimately depends on the secrecy of the shared password\cite{bellovin1992}, and poor password choices may weaken the overall system. Nevertheless, EKE offers an effective and lightweight authentication mechanism in environments where public key infrastructures are unavailable or impractical, making it a relevant building block for secure key exchange protocol design.
+
+
+
+
+\subsection{Post-Quantum Key Establishment and KEMs}
+
+Key-Encapsulation Mechanisms (KEMs) have become a central concept in post-quantum cryptography \cite{nist2024}, providing a secure and efficient method for establishing a shared secret over an insecure communication channel. Unlike classical key exchange protocols such as Diffie-Hellman, which rely on an interactive key agreement process, KEMs are based on the encapsulation and decapsulation of a secret key.
+
+A KEM typically consists of three main algorithms: key generation, encapsulation, and decapsulation. In the key generation phase, a receiving party generates a public--private key pair, where the public key is distributed and the private key is kept secret. To initiate key establishment, the sending party uses the public key to encapsulate a randomly generated secret, producing a ciphertext. This ciphertext is transmitted over the insecure channel, and upon reception, the receiving party applies the decapsulation algorithm using its private key to recover the shared secret. This secret can then be used as input to symmetric cryptographic primitives for subsequent secure communication.
+
+Compared to Diffie-Hellman, KEMs provide a more structured and straightforward approach to key establishment. As a result, many post-quantum cryptographic protocols adopt KEM-based designs as a replacement for classical key exchange mechanisms. However, a KEM alone does not provide authentication. It inherently assumes that the public key used during the encapsulation phase is authentic, and therefore remains vulnerable to active attacks such as public key substitution and man-in-the-middle attacks.
+
+Despite this limitation, KEMs play a fundamental role in post-quantum cryptography and serve as the foundation for several standardized algorithms. One prominent example is CRYSTALS-Kyber, a lattice-based KEM selected by NIST for post-quantum key establishment \cite{kyberspec,nist2024}.
+
+
+
+\subsection{Lattice-Based Cryptography}
+
+Lattice-based cryptography has emerged as one of the leading approaches in post-quantum cryptography  \cite{nist2024}. Unlike classical cryptographic schemes that focus on number-theoretic problems, lattice-based cryptography relies on mathematical problems defined over regular and structured grids of points in a high-dimensional space, known as lattices. Because of their mathematical properties, lattice-based schemes are deemed infeasible even for quantum computers, which makes lattice-based approaches strong candidates to replace public-key cryptography in a post-quantum setting.
+
+This cryptographic approach relies on the central hardness assumption of problems such as Learning with Errors (LWE) and the Shortest Vector Problem (SVP)\cite{regev2005}. Essentially, these problems can be described as recovering a hidden secret from a set of multiple equations that have been deliberately tampered with by adding small random errors. While these equations may appear almost correct, the presence of noise makes it computationally difficult to determine the original secret without additional information. As a result, constructing these equations is straightforward when the secret is known. However, recovering the secret from the noisy equations is computationally infeasible \cite{regev2005}, even for quantum computers. For this reason, LWE provides a strong foundation for building secure cryptographic schemes in a post-quantum context.
+
+LWE has several variants, such as Ring-LWE and Module-LWE \cite{regev2005}, which improve efficiency by introducing additional algebraic structures. This allows for more compact key sizes and faster computations, making lattice-based schemes more practical for real-world applications. Post-quantum solutions often take advantage of these variants to achieve a balance between security and performance. CRYSTALS-Kyber, for example, is a lattice-based KEM built on the Module-LWE \cite{kyberspec}, which will be further explored in this report.
+
+
+
+
+\newpage
+\section{CRYSTALS-Kyber}
+
+
+
+\subsection {Design Goals and Security Model}
+
+CRYSTALS-Kyber was selected by NIST as one of the first standardized post-quantum cryptographic algorithms \cite{nist2024,kyberspec}. Kyber is a lattice-based KEM designed to enable secure key establishment in a post-quantum context, allowing two parties to achieve a secret key over an insecure channel without relying on classical key agreement methods. The design of Kyber aims to balance strong security guarantees with practical efficiency requirements, making it suitable for deployment in real-world communication protocols.
+
+From a security perspective, Kyber is based on the hardness of the Module-LWE problem \cite{kyberspec}. This algorithm is designed to achieve security against chosen-plaintext attacks and, through standard transformations such as the Fujisaki–Okamoto transform \cite{fujisaki1999}, it can be extended to provide resistance against chosen-ciphertext attacks. These security properties, combined with its efficient performance, contributed to Kyber’s selection by NIST as a standardized post-quantum key encapsulation mechanism.
+
+However, it is important to mention that Kyber, as a KEM, does not provide authentication on its own \cite{nist2024}. Therefore, it is essential to integrate Kyber into a broader protocol that includes authentication mechanisms to ensure the integrity and authenticity of the communicating parties.
+
+
+
+
+\subsection{Kyber Algorithm Overview}
+
+Kyber follows a KEM paradigm \cite{kyberspec}, which involves three main algorithms: key generation, encapsulation, and decapsulation. During these phases, two parties are able to establish a shared secret over an insecure channel without relying on the security assumptions of classical key exchange methods. Each phase plays a distinct role in the overall operation of the scheme and contributes to its security and correctness.
+
+
+\subsection{Mathematical Structure of Kyber}
+
+CRYSTALS-Kyber is a lattice-based KEM whose security relies on the hardness of the Module Learning with Errors (Module-LWE) problem \cite{kyberspec}. All mathematical operations in Kyber are defined over a fixed polynomial ring, which provides the structure required to ensure efficiency and security.
+
+\subsection*{Polynomial Ring Definition}
+
+Kyber operates over the polynomial ring defined as:
+\begin{equation}
+R_q = \mathbb{Z}_q[x] / (x^n + 1)
+\end{equation}
+where \( n = 256 \) and \( q = 3329 \). 
+
+Every element of \( R_q\) is represented as a polynomial of degree less than \( n \) with coefficients reduced modulo \(q\). All polynomial operations such as addition and multiplication are performed in this ring so that all results remain within the defined structure.
+
+All values in Kyber, including keys, ciphertexts, error terms and other components are represented as polynomials in \( R_q\).
+
+\subsection*{Module-LWE Assumption}
+
+The security of Kyber is based on the assumption that given a public matrix \( A \in R_q^{k \times k} \) and a vector 
+
+\begin{equation}
+\mathbf{t} = A \mathbf{s} + \mathbf{e} \hspace{0.5cm}   \pmod{q}
+\end{equation}
+
+it is computationally infeasible to recover the secret \( \mathbf{s} \in R_q^k \)  because of the presence of the error \(\mathbf{e} \in R_q^k \). This error, also referred to as noise, is intentionally sampled from a distribution centered around zero and added to the equations in order to prevent efficient recovery of the secret by an adversary.
+
+\subsection*{Key Generation}
+
+In order to establish a communication channel, the receiving party, Bob, generates a small secret \(\mathbf{s}\) and an error \( \mathbf{e} \). Using a publicly generated matrix \(A\), Bob computes:
+
+\begin{equation}
+\mathbf{t} = \mathbf{A} \mathbf{s} + \mathbf{e} \pmod{q}.
+\end{equation}
+
+and sends to Alice his public key \(pk = (seedA, \mathbf{t})\). The seed allows Alice to deterministically reconstruct the same matrix \(A\) while \(t\) contains the secret \(s\) with added noise. Bob keeps his secret key, which includes the vector \(\mathbf{s}\), private. 
+
+\subsection*{Encapsulation}
+
+Alice upon receiving Bob's public key, generates her own small secret \( \mathbf{r} \) and error terms \(\mathbf{e_1}\) and \(\mathbf{e_2}\). She also reconstructs the matrix \(A\) from the seed included in \(\mathbf{pk}\). Using these values, Alice computes the ciphertext components as follows:
+\begin{equation}
+\mathbf{u} = A^T \cdot \mathbf{r} + \mathbf{e_1} \hspace{0.5cm}  \pmod{q}
+\end{equation}
+
+\begin{equation}
+v = \mathbf{t}^T \mathbf{r} + e_2 + \mathrm{enc}(m) \pmod{q}
+\end{equation}  
+
+where \(\mathrm{enc}(m)\) is the encoding of a randomly generated message \(m\). The ciphertext is then formed as \(ct = (\mathbf{u}, \mathbf{v})\) and sent to Bob. Alice also derives the shared secret \(ss\) from the message \(m\) using a Key Derivation Function (KDF).
+
+\subsection*{Decapsulation}
+
+Upon receiving the ciphertext \( ct = (\mathbf{u}, v) \), Bob performs an algebraic operation to recover the encoded message. Using his secret key \( \mathbf{s} \), Bob computes
+
+\begin{equation}
+w = v - \mathbf{s}^T \mathbf{u} \pmod{q}.
+\end{equation}
+
+Recall that the ciphertext components were generated as
+
+\begin{equation}
+\mathbf{u} = \mathbf{A}^T \mathbf{r} + \mathbf{e}_1 \pmod{q},
+\tag{4}
+\end{equation}
+
+\begin{equation}
+v = \mathbf{t}^T \mathbf{r} + e_2 + \mathrm{enc}(m) \pmod{q},\tag{5}
+\end{equation}
+
+where the public key component \( \mathbf{t} \) is defined as
+
+\begin{equation}
+\mathbf{t} = A \mathbf{s} + \mathbf{e} \hspace{0.5cm}   \pmod{q}
+\tag{3}
+\end{equation}
+
+Substituting \( \mathbf{t} \) and \( \mathbf{u} \) into the expression for \( w \), we obtain
+
+\begin{align}
+w &= (\mathbf{A}\mathbf{s} + \mathbf{e})^T \mathbf{r}
+    + e_2 + \mathrm{enc}(m)
+    - \mathbf{s}^T(\mathbf{A}^T \mathbf{r} + \mathbf{e}_1) \pmod{q} \\
+w &= \mathrm{enc}(m)
+    + \mathbf{e}^T \mathbf{r}
+    + e_2
+    - \mathbf{s}^T \mathbf{e}_1 \pmod{q}.
+\end{align}
+
+The secret-dependent term \( \mathbf{s}^T \mathbf{A}^T \mathbf{r} \) cancels out, leaving the encoded message with some noise. Since this noise is sufficiently small, Bob can correctly decode the message \( m \) with overwhelming probability.
+
+After recovering the message \( m \), Bob derives the shared secret \( ss \) using the same Key Derivation Function (KDF) as Alice.
+
+
+
+
+\subsection{Implementation Overview}
+
+This section describes the implementation setup used to verify the functional correctness of the CRYSTALS-Kyber KEM. The implementation is based on the official reference code provided by the PQ-Crystals project \cite{pqcrystals_ref} and was used without any modifications to ensure compliance with the original specifications.
+
+Since the primary goal of this implementation is to experimentally verify and validate the Kyber algorithm, the reference code located in the \texttt{ref/} was selected due to its clarity. In addition, optimized versions of the code are also available in the \texttt{avx2/} directory, but they were not used at this stage.
+
+All tests were conducted in C, as the reference code is written in the same language, and were compiled using the GCC compiler in a Linux environment. 
+
+
+
+
+
+
+\subsection{Key Encapsulation Workflow}
+
+To experimentally validate Kyber, a simple two-party communication model was implemented. The model consists of a sender, Alice, and a receiver, Bob. The goal is for both parties to establish a shared secret using Kyber encapsulation and decapsulation processes.
+
+In the first step, Bob generates a public-private key pair using the Kyber key generation algorithm. The public key is shared with Alice while the private key remains secret and is used during the decapsulation phase.
+
+Alice receives Bob's public key and executes the encapsulation algorithm to generate the ciphertext and the shared secret. The ciphertext is sent to Bob while the shared secret is kept locally by Alice.
+
+After receiving the ciphertext from Alice, Bob uses his private key to decapsulate the ciphertext and retrieve the shared secret. 
+
+Finally, both parties compare their derived shared secrets to verify that they match, confirming the correctness of the Kyber implementation.
+
+
+
+
+\subsection{Experimental Validation}
+
+A series of tests were conducted to validate the correctness of the Kyber implementation. As previously stated, an execution is considered successful if both parties achieve the same shared secret after all KEM phases.
+
+As a first step, the official tests provided in the reference code were executed. These tests cover various levels of security: Kyber-512, Kyber-768, and Kyber-1024. Each security level was tested multiple times to ensure consistency. Additional checks were also performed using altered ciphertexts, reflecting a chosen-ciphertext attack scenario.
+
+Beyond the official tests, a custom standalone Alice-Bob demo was implemented following the description in the previous subsection. This demo was executed multiple times for each security level to further validate the implementation.
+
+Together, these tests aimed to provide a systematic validation of the correctness of the CRYSTALS-Kyber KEM implementation.
+
+
+
+
+
+\subsection{Results}
+
+All experimental tests described in the previous subsection were successfully completed with no failures observed. The following table summarizes the results obtained for each security level of Kyber:
+
+\begin{footnotesize}
+\begin{longtable}{|l|c|c|c|c|}
+\hline
+\textbf{Kyber Variant} & \textbf{Public Key (bytes)} & \textbf{Secret Key (bytes)} & \textbf{Ciphertext (bytes)} & \textbf{Result} \\ \hline
+\endfirsthead
+
+\multicolumn{5}{c}{{Table \thetable{} continued from previous page}} \\ \hline
+\textbf{Kyber Variant} & \textbf{Public Key (bytes)} & \textbf{Secret Key (bytes)} & \textbf{Ciphertext (bytes)} & \textbf{Result} \\ \hline
+\endhead
+
+\hline \multicolumn{5}{r}{{Continued on next page}} \\ \endfoot
+\hline
+\endlastfoot
+
+Kyber512  & 800  & 1632 & 768  & Passed \\ \hline
+Kyber768  & 1184 & 2400 & 1088 & Passed \\ \hline
+Kyber1024 & 1568 & 3168 & 1568 & Passed \\ \hline
+
+\caption{Experimental results for the CRYSTALS-Kyber key encapsulation mechanism}
+\label{tab:kyber_results}
+\end{longtable}
+\end{footnotesize}
+
+As expected, the increase of security levels resulted in larger key sizes and ciphertexts. This shows the trade-off between security and performance. Achieving higher security requires larger keys and ciphertexts, which may impact performance in resource-constrained environments.
+
+In addition to parameter-level observations, the table below summarizes the coverage and outcomes of the experimental validation procedures:
+
+\begin{footnotesize}
+\begin{longtable}{|l|c|c|c|}
+\hline
+\textbf{Test Type} & \textbf{Kyber512} & \textbf{Kyber768} & \textbf{Kyber1024} \\ \hline
+\endfirsthead
+
+\multicolumn{4}{c}{{Table \thetable{} continued from previous page}} \\ \hline
+\textbf{Test Type} & \textbf{Kyber512} & \textbf{Kyber768} & \textbf{Kyber1024} \\ \hline
+\endhead
+
+\hline \multicolumn{4}{r}{{Continued on next page}} \\ \endfoot
+\hline
+\endlastfoot
+
+Official KEM Tests (\texttt{test\_kyber*}) & Passed & Passed & Passed \\ \hline
+CCA-style Ciphertext Checks              & Passed & Passed & Passed \\ \hline
+Reference Test Vectors (\texttt{test\_vectors*}) & Passed & Passed & Passed \\ \hline
+Alice--Bob Demonstration                 & Passed & Passed & Passed \\ \hline
+
+\caption{Coverage and outcomes of the experimental validation procedures}
+\label{tab:kyber_test_coverage}
+\end{longtable}
+\end{footnotesize}
+
+The successful execution of the official KEM tests, the validation against reference test vectors, the handling of modified ciphertexts, and the standalone Alice–Bob demonstration collectively provide strong evidence of the correctness and robustness of the implemented system.
+
+\newpage
+
+
+\section{Authenticated CRYSTALS-Kyber using EKE}
+
+\subsection{Motivation and Design}
+
+While CRYSTALS-Kyber provides an efficient mechanism for key establishment, it does not offer authentication on its own \cite{kyberspec}. It assumes that the public key used during encapsulation is authentic, an assumption that may not hold in practical deployment scenarios. As a result, the lack of authentication makes the protocol vulnerable to man-in-the-middle attacks. Therefore, it is essential to combine Kyber with an authentication mechanism to ensure the integrity and authenticity of the communicating parties.
+
+In this context, password-based authentication can be an effective solution, particularly in environments where public key infrastructures are unavailable or impractical. The Encrypted Key Exchange (EKE) paradigm \cite{bellovin1992} provides a framework for integrating password-based authentication with key exchange mechanisms. By using a shared password to protect the key exchange process, EKE prevents active attacks and ensures that only parties who know the correct password can successfully establish a shared secret.
+
+The design presented in this work is based on the classical EKE–Diffie–Hellman protocol \cite{bellovin1992} and adapts its core principles to use CRYSTALS-Kyber as the underlying Key Encapsulation Mechanism. By integrating Kyber into an EKE-style construction, the proposed approach aims to achieve authenticated key establishment while preserving resistance against quantum-capable adversaries.
+
+
+\subsection{Protocol Specification (EKE-Kyber)}
+
+The proposed protocol follows the Encrypted Key Exchange (EKE) paradigm while using CRYSTALS-Kyber as the underlying post-quantum Key Encapsulation Mechanism. The protocol involves two parties, Alice and Bob, who share a previously established password \( pw \). This password is assumed to be known only to the legitimate parties and is never transmitted in clear over the communication channel.
+
+The protocol begins with Bob generating a random salt and deriving a symmetric key from the shared password using a password-based key derivation function. Specifically, a password-derived key is computed as
+\[
+pw_{Bob} = \mathrm{PBKDF2}(pw, \mathrm{salt}).
+\]
+This key is used exclusively to protect the exchange of public key material and is independent of the final shared secret.
+
+Bob then generates a CRYSTALS-Kyber key pair \((pk_{Bob}, sk_{Bob})\). To ensure authenticity, Bob encrypts and authenticates his Kyber public key \(pk_{Bob}\) using the derived key \(pw_{Bob}\) and the AES-GCM authenticated encryption scheme. The resulting ciphertext \(ct_{pk}\), together with the salt, initialization vector \(iv_{pk}\), and authentication tag \(tag_{pk}\), is sent to Alice.
+
+Upon receiving these values, Alice derives the same password-based key \(pw_{Alice}\) using the shared password and the received salt. Alice then decrypts and verifies the ciphertext \(ct_{pk}\) using AES-GCM with the received parameters. If the decryption or authentication fails, the protocol is aborted. Otherwise, Alice successfully recovers Bob’s Kyber public key \(pk_{Bob}\).
+
+After obtaining a valid public key, Alice executes the Kyber encapsulation algorithm using \(pk_{Bob}\), producing a ciphertext \(ct_{K}\) and a shared secret \(ss_A\). The ciphertext \(ct_{K}\) is then sent to Bob over the insecure channel.
+
+Bob receives the ciphertext \(ct_{K}\) and performs the Kyber decapsulation algorithm using his private key \(sk_{Bob}\), recovering a shared secret \(ss_B\). Correctness is verified by checking that \(ss_A = ss_B\).
+
+At the end of this phase, Alice and Bob share a common post-quantum secret. Authentication is achieved implicitly, since only a party possessing the correct password is able to decrypt the protected public key and successfully complete the encapsulation and decapsulation process.
+
+
+\subsection{Implementation Overview}
+
+The implementation of the EKE-Kyber protocol was designed as a minimal and transparent proof of concept. The objective was to demonstrate how authentication can be added to a post-quantum key exchange protocol using the Encrypted Key Exchange (EKE) paradigm.
+
+The program was developed in the C programming language, using the OpenSSL library to implement standard cryptographic primitives such as AES-256-GCM for authenticated encryption and PBKDF2 for password-based key derivation.
+
+Post-quantum key establishment was implemented using the official CRYSTALS-Kyber reference code provided by the PQ-Crystals project. This code was used without any modifications in order to ensure full compliance with the original specifications.
+
+The protocol logic is implemented in a single standalone program that simulates the interaction between two parties, Alice and Bob. The implementation focuses on clarity and functional correctness rather than performance optimizations or resistance to side-channel attacks.
+
+\subsection{Experimental Validation}
+
+The experimental validation of the EKE-Kyber protocol focuses on verifying that both parties are able to successfully establish a shared secret while ensuring that authentication is properly enforced. 
+
+The implementation was executed multiple times to confirm that the derived password-based keys at Alice and Bob are identical when using the same password and salt. This validates the correct use of the PBKDF2 key derivation function and ensures that both parties operate under the same symmetric key during the authentication phase.
+
+In addition, the program was tested using Kyber's three security levels (Kyber-512, Kyber-768, and Kyber-1024) to confirm that the protocol functions correctly across different parameter sets. In all cases, the protocol successfully established a shared secret between Alice and Bob, confirming the correctness of the implementation.
+
+To further validate the authentication mechanism, tests were conducted with incorrect passwords. In these scenarios, the decryption of Bob's public key by Alice failed as expected, and the protocol was correctly aborted, demonstrating that authentication is effectively enforced.
+
+Overall, the experimental validation confirms that the EKE-Kyber protocol successfully integrates authentication with post-quantum key establishment, providing a secure mechanism for two parties to establish a shared secret over an insecure channel.
+
+
+\subsection{Security Discussion and Limitations}
+
+The EKE-Kyber protocol provides a secure mechanism for authenticated key establishment in a post-quantum context. By protecting the public key exchange with a password-based authentication mechanism, the protocol provides resistance against man-in-the-middle attacks while leveraging the security properties of CRYSTALS-Kyber to ensure the confidentiality of the established shared secret.
+
+Despite its advantages, the protocol also presents several limitations. In particular, the overall security relies heavily on the secrecy and strength of the shared password. If the password is weak or compromised, an adversary may be able to impersonate one of the parties and successfully interfere with the key establishment process. Although the use of PBKDF2 with a salt and a high iteration count mitigates the risk of offline dictionary attacks, it does not eliminate the inherent vulnerabilities associated with password-based authentication.
+
+Therefore, it is crucial to encourage the use of strong, high-entropy passwords and to consider additional security measures to enhance the overall robustness of the system. Furthermore, the current implementation focuses on functional correctness and does not address side-channel attacks or other implementation-specific vulnerabilities, which would need to be carefully considered in a production environment.
+
+\newpage
 \section{Conclusion}
 
+This report provided an overview of the NIST-standardized post-quantum key encapsulation mechanism CRYSTALS-Kyber, covering its design goals, mathematical structure, and practical implementation. Experimental validation confirmed the functional correctness of the Kyber reference implementation across different security levels, demonstrating that both parties consistently derive the same shared secret after encapsulation and decapsulation.
+
+In addition, this work proposed an authenticated post-quantum key establishment approach based on the Encrypted Key Exchange (EKE) paradigm, integrating CRYSTALS-Kyber to address the lack of authentication inherent to standalone KEM deployments. The implemented EKE-Kyber proof of concept showed that a shared secret can be established while implicitly enforcing authentication by protecting the exchange of Kyber public key material with password-derived symmetric encryption. The validation also confirmed that protocol execution is aborted when incorrect password material is used, as expected.
+
+Despite these results, the proposed design inherits the limitations of password-based authentication, making overall security dependent on password secrecy and strength. For this reason, strong password selection and appropriate password-hardening mechanisms remain essential. Furthermore, the current implementation focuses on clarity and functional correctness and does not address side-channel resistance or provide a formal security proof under a standard authenticated key exchange model.
+
+Overall, this work contributes to a better understanding of post-quantum key establishment and highlights the importance of integrating authentication mechanisms when designing practical post-quantum secure communication protocols. The EKE-Kyber construction presented serves as a clear and minimal example of how authentication can be introduced using standard cryptographic primitives combined with a post-quantum KEM.
+
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
 \end{document}
+
