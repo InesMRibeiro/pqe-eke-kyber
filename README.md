@@ -1,25 +1,30 @@
-# Post-Quantum Cryptography Project
+# EKE-Kyber: Authenticated Post-Quantum Key Exchange
 
-This project is developed as part of the SIRS course, aiming to deepen understanding of key exchange protocols and explore post-quantum cryptography solutions.
+This project implements an authenticated post-quantum key exchange protocol by integrating **CRYSTALS-Kyber** into the **Encrypted Key Exchange (EKE)** framework. 
 
-The main focus is to study and adapt the **Encrypted Key Exchange (EKE)** protocol to a post-quantum context, ensuring **authenticity** of communications and **security** against adversaries equipped with quantum computers.
+The primary goal is to provide a communication channel that is secure against quantum-capable adversaries while preventing Man-in-the-Middle (MitM) attacks through password-based authentication.
 
-## Project Objectives
+## Overview
+Standard Key Encapsulation Mechanisms (KEMs) like Kyber provide strong confidentiality but do not inherently authenticate the participants, leaving them vulnerable to active attacks. This project addresses this by using a pre-shared password to encrypt and verify the exchange of public keys.
 
-- Understand classical key exchange protocols and their authentication mechanisms.  
-- Explore post-quantum algorithms for secure key exchange.  
-- Adapt EKE for a post-quantum scenario, maintaining authenticity and confidentiality properties.
 
-## Initial Structure
 
-- `src/` – Project source code.  
-- `report/` – Documentation and progress reports.  
+## Key Features
+* **Post-Quantum Security:** Utilizes CRYSTALS-Kyber, a lattice-based KEM standardized by NIST.
+* **Implicit Authentication:** Employs the EKE paradigm to ensure only parties with the correct password can recover the public key and establish a shared secret.
+* **Authenticated Encryption:** Uses **AES-256-GCM** to protect the public key material during transmission.
+* **Key Derivation:** Implements **PBKDF2** with a salt to derive symmetric keys from low-entropy passwords.
 
-## Dependencies
+## Repository Structure
+The project is organized as follows:
 
-This project uses **PQClean**, an open-source library of post-quantum cryptographic algorithms, for implementing the Kyber key exchange.  
-Repository: [https://github.com/PQClean/PQClean](https://github.com/PQClean/PQClean)
+* **`src/`**: Contains the C source code for the protocol.
+    * Includes the [**PQ-Crystals**](https://github.com/pq-crystals/kyber) for Kyber. reference implementation for Kyber.
+    * Logic for password-based key derivation and the Alice-Bob simulation.
+* **`report/`**: Technical documentation detailing the project's background, mathematical structure of Kyber, and implementation details.
 
-## Status
 
-Project in early stages.
+---
+
+**Author:** Inês Martins Ribeiro 
+**Course:** Network and Computer Security
