@@ -19,7 +19,7 @@ Standard Key Encapsulation Mechanisms (KEMs) like Kyber provide strong confident
 The project is organized as follows:
 
 * **`src/`**: Contains the C source code for the protocol.
-    * Includes the [**PQ-Crystals**](https://github.com/pq-crystals/kyber) for Kyber. reference implementation for Kyber.
+    * Includes the [**PQ-Crystals**](https://github.com/pq-crystals/kyber) for Kyber.
     * Logic for password-based key derivation and the Alice-Bob simulation.
 * **`report/`**: Technical documentation detailing the project's background, mathematical structure of Kyber, and implementation details.
 
